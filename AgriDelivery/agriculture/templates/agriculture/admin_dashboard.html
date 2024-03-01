@@ -1,0 +1,82 @@
+{% extends 'agriculture/admin_base.html' %}
+{% load static %}
+{% block content %}
+<br>
+{%include 'agriculture/admin_dashboard_cards.html'%}
+<br><br><br><br><br>
+
+<hr><hr>
+<div class="container" >
+
+    <div class="panel panel-danger" >
+      <div class="panel-heading" style="text-align:center;">
+        <h6 class="panel-title">Recent Booking</h6>
+      </div>
+      <table class="table table-hover table-bordered" id="dev-table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Shipment Address</th>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Status</th>
+
+          </tr>
+        </thead>
+        {% for product,customer,order in data %}
+        <tr>
+          {% for c in customer %}
+          <td> {{c.get_name}}</td>
+          <td>{{c.mobile}}</td>
+          <td>{{order.address}}</td>
+
+          {% endfor %}
+          {% for p in product %}
+          <td> {{p.name}}</td>
+          <td> <img src="{% static p.product_image.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+
+          {% if order.status == 'Pending'%}
+          <td> <span class="label label-info">{{order.status}}</span></td>
+          {% elif order.status == 'Delivered' %}
+          <td> <span class="label label-success">{{order.status}}</span></td>
+          {% elif order.status == 'Out for Delivery' %}
+          <td> <span class="label label-warning">{{order.status}}</span></td>
+          {%else%}
+            <td> <span class="label label-primary">{{order.status}}</span></td>
+          {%endif%}
+          {% endfor %}
+        </tr>
+        {% endfor %}
+
+
+
+
+
+      </table>
+      <!-- Add pagination links below the table -->
+<div class="pagination">
+  <span class="step-links">
+      {% if data.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ data.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+          Page {{ data.number }} of {{ data.paginator.num_pages }}.
+      </span>
+
+      {% if data.has_next %}
+          <a href="?page={{ data.next_page_number }}">next</a>
+          <a href="?page={{ data.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+  </span>
+</div>
+
+
+
+  </div>
+</div>
+
+
+{% endblock content %}
